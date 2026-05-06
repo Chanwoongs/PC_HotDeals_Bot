@@ -50,11 +50,18 @@ def fetch_deals() -> list[dict]:
         )
         page.goto(TARGET_URL, wait_until="networkidle", timeout=30000)
 
+        # 페이지 제목 확인
+        print(f"[페이지 제목] {page.title()}")
+
         # JS 렌더링 대기
         try:
             page.wait_for_selector("a[href*='/deal/'], .deal-card, article", timeout=15000)
         except Exception:
             print("[경고] 딜 셀렉터 타임아웃 - 페이지 소스 확인 필요")
+            # 페이지 HTML 저장
+            with open("page_source.html", "w", encoding="utf-8") as f:
+                f.write(page.content())
+            print("[디버그] page_source.html에 저장됨")
 
         # 딜 카드 파싱 (사이트 구조에 맞게 유연하게)
         cards = page.query_selector_all("a[href*='/deal/']")

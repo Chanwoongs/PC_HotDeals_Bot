@@ -30,6 +30,16 @@ jobs:
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
         run: python crawler.py
 
+      - name: Upload page source if error
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: debug-artifacts
+          path: |
+            page_source.html
+            seen_deals.json
+          retention-days: 1
+
       - name: Save seen deals cache
         uses: actions/cache@v4
         with:
