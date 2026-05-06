@@ -58,7 +58,19 @@ def fetch_deals() -> list[dict]:
 
         # 딜 카드 파싱 (사이트 구조에 맞게 유연하게)
         cards = page.query_selector_all("a[href*='/deal/']")
-        
+        print(f"[디버그] a[href*='/deal/'] 찾음: {len(cards)}개")
+
+        # 다른 셀렉터들도 확인
+        if len(cards) == 0:
+            print(f"[디버그] .deal-card 찾음: {len(page.query_selector_all('.deal-card'))}개")
+            print(f"[디버그] article 찾음: {len(page.query_selector_all('article'))}개")
+            print(f"[디버그] 전체 a 태그: {len(page.query_selector_all('a'))}개")
+            all_links = page.query_selector_all('a')
+            for i, link in enumerate(all_links[:5]):
+                href = link.get_attribute("href")
+                text = (link.inner_text() or "")[:50]
+                print(f"  a태그#{i}: href={href} | text={text}")
+
         seen_links = set()
         for card in cards:
             href = card.get_attribute("href") or ""
